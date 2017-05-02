@@ -64,6 +64,9 @@ AH_TEMPLATE([HAVE_XHPDISABLERESET],
 #	    [Define this if you have the SGI-VIDEO-CONTROL extension.  This
 #	    is standard on Irix systems, and not available elsewhere.])
 
+AH_TEMPLATE([HAVE_XSS_EXTENSION],
+	    [Define this if you have the X Screensaver Extension.])
+
 AH_TEMPLATE([HAVE_DPMS_EXTENSION],
 	    [Define this if you have the XDPMS extension.  This is standard
 	    on sufficiently-recent XFree86 systems, and possibly elsewhere. 
@@ -1561,6 +1564,35 @@ fi
 #  echo "error: must be yes or no: --with-sgivc-ext=$with_sgivc"
 #  exit 1
 #fi
+
+
+###############################################################################
+#
+#       Check for the X Screensaver Extension.
+#
+###############################################################################
+
+have_xss=no
+with_xss_req=unspecified
+AC_ARG_WITH(xss-ext,
+[  --with-xss-ext          Include support for the X Screensaver Extension.],
+  [with_xss="$withval"; with_xss_req="$withval"],[with_xss=yes])
+
+HANDLE_X_PATH_ARG(with_xss, --with-xss-ext, XSS)
+
+if test "$with_xss" = yes; then
+  AC_CHECK_X_HEADER(X11/extensions/scrnsaver.h, [have_xss=yes], [have_xss=no],)
+  if test "$have_xss" = yes; then
+    AC_CHECK_X_LIB(Xss, XScreenSaverAllocInfo, [have_xss=yes], [have_xss=no])
+    if test "$have_xss" = yes; then
+      AC_DEFINE(HAVE_XSS_EXTENSION)
+      SAVER_LIBS="$SAVER_LIBS -lXss"
+    fi
+  fi
+elif test "$with_xss" != no; then
+  echo "error: must be yes or no: --with-xss-ext=$with_xss"
+  exit 1
+fi
 
 
 ###############################################################################

@@ -660,6 +660,9 @@ connect_to_server (saver_info *si, int *argc, char **argv)
   XtAppSetErrorMsgHandler (si->app, 0);
 
   si->dpy = XtDisplay (toplevel_shell);
+#ifdef HAVE_XSS_EXTENSION
+  si->xss_info = XScreenSaverAllocInfo();
+#endif
   si->prefs.db = XtDatabase (si->dpy);
   XtGetApplicationNameAndClass (si->dpy, &progname, &progclass);
 
@@ -923,6 +926,7 @@ initialize_server_extensions (saver_info *si)
   Bool server_has_xidle_extension_p = False;
   Bool server_has_sgi_saver_extension_p = False;
   Bool server_has_mit_saver_extension_p = False;
+  Bool server_has_xss_extension_p = False;
   Bool system_has_proc_interrupts_p = False;
   Bool server_has_xinput_extension_p = False;
   const char *piwhy = 0;
@@ -930,6 +934,7 @@ initialize_server_extensions (saver_info *si)
   si->using_xidle_extension = p->use_xidle_extension;
   si->using_sgi_saver_extension = p->use_sgi_saver_extension;
   si->using_mit_saver_extension = p->use_mit_saver_extension;
+  si->using_xss_extension = p->use_xss_extension;
   si->using_proc_interrupts = p->use_proc_interrupts;
   si->using_xinput_extension = p->use_xinput_extension;
 
@@ -950,6 +955,13 @@ initialize_server_extensions (saver_info *si)
     XScreenSaverQueryExtension (si->dpy,
                                 &si->mit_saver_ext_event_number,
                                 &si->mit_saver_ext_error_number);
+#else
+# ifdef HAVE_XSS_EXTENSION
+  server_has_xss_extension_p =
+    XScreenSaverQueryExtension (si->dpy,
+                                &si->xss_ext_event_number,
+                                &si->xss_ext_error_number);
+# endif
 #endif
 #ifdef HAVE_PROC_INTERRUPTS
   system_has_proc_interrupts_p = query_proc_interrupts_available (si, &piwhy);
@@ -983,6 +995,8 @@ initialize_server_extensions (saver_info *si)
 
   if (!server_has_mit_saver_extension_p)
     si->using_mit_saver_extension = False;
+  if (!server_has_xss_extension_p)
+    si->using_xss_extension = False;
   else if (p->verbose_p)
     {
       if (si->using_mit_saver_extension)

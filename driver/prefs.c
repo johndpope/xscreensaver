@@ -1140,6 +1140,9 @@ load_init_file (Display *dpy, saver_preferences *p)
                                                      "mitSaverExtension",
 						     "Boolean");
 #endif
+#ifdef HAVE_XSS_EXTENSION
+  p->use_xss_extension = True;
+#endif
 
   p->use_proc_interrupts = get_boolean_resource (dpy,
                                                  "procInterrupts", "Boolean");

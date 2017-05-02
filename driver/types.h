@@ -63,6 +63,10 @@ struct poll_mouse_data {
   time_t time;
 };
 
+#ifdef HAVE_XSS_EXTENSION
+#include <X11/extensions/scrnsaver.h>
+#endif
+
 #ifdef HAVE_XINPUT
 /* XInputExtension device support */
 #include <X11/extensions/XInput.h>
@@ -151,6 +155,7 @@ struct saver_preferences {
 
   Bool use_xidle_extension;	/* which extension to use, if possible */
   Bool use_mit_saver_extension;
+  Bool use_xss_extension;
   Bool use_sgi_saver_extension;
   Bool use_proc_interrupts;
   Bool use_xinput_extension;
@@ -203,10 +208,17 @@ struct saver_info {
   Bool using_mit_saver_extension;  /* Note that `p->use_*' is the *request*, */
   Bool using_sgi_saver_extension;  /* and `si->using_*' is the *reality*.    */
   Bool using_proc_interrupts;
+  Bool using_xss_extension;
 
 # ifdef HAVE_MIT_SAVER_EXTENSION
   int mit_saver_ext_event_number;
   int mit_saver_ext_error_number;
+# else
+#  ifdef HAVE_XSS_EXTENSION
+  int xss_ext_event_number;
+  int xss_ext_error_number;
+  XScreenSaverInfo *xss_info;
+#  endif
 # endif
 # ifdef HAVE_SGI_SAVER_EXTENSION
   int sgi_saver_ext_event_number;

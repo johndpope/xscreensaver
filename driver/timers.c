@@ -37,6 +37,10 @@
 
 #ifdef HAVE_MIT_SAVER_EXTENSION
 #include <X11/extensions/scrnsaver.h>
+#else
+# ifdef HAVE_XSS_EXTENSION
+#  include <X11/extensions/scrnsaver.h>
+# endif
 #endif /* HAVE_MIT_SAVER_EXTENSION */
 
 #ifdef HAVE_SGI_SAVER_EXTENSION
@@ -799,6 +803,17 @@ sleep_until_idle (saver_info *si, Bool until_idle_p)
 		  idle = 0;
 		}
 	    else
+#else
+# ifdef HAVE_XSS_EXTENSION
+	      if (si->using_xss_extension)
+		{
+		  XScreenSaverQueryInfo(si->dpy,
+					DefaultRootWindow(si->dpy),
+					si->xss_info);
+		  idle = si->xss_info->idle;
+		}
+	    else
+# endif /* HAVE_XSS_EXTENSION */
 #endif /* HAVE_MIT_SAVER_EXTENSION */
 #ifdef HAVE_SGI_SAVER_EXTENSION
 	      if (si->using_sgi_saver_extension)
