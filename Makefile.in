@@ -7,7 +7,7 @@ VPATH		= @srcdir@
 
 SHELL		= /bin/sh
 SUBDIRS 	= utils jwxyz hacks hacks/glx driver po
-SUBDIRS2	= $(SUBDIRS) OSX android
+SUBDIRS2	= $(SUBDIRS)
 TARFILES	= README README.hacking README.VMS INSTALL \
 		  configure configure.in Makefile.in config.h.in \
 		  config.h-vms install-sh setup.com config.guess aclocal.m4 \
@@ -54,8 +54,8 @@ clean::
 	@$(MAKE_SUBDIR2)
 
 distclean:: clean
-	-rm -f config.h Makefile config.status config.cache config.log TAGS *~ "#"* intltool-extract intltool-merge intltool-update
 	@$(MAKE_SUBDIR2)
+	-rm -f config.h Makefile config.status config.cache config.log TAGS *~ "#"* intltool-extract intltool-merge intltool-update
 
 dist:: tar
 

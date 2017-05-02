@@ -1736,6 +1736,8 @@ decrepit_p (void)
      everyone involved, most especially the users.
   */
 
+  return 0;
+
   time_t now = time ((time_t *) 0);				/*       */
   struct tm *tm = localtime (&now);				/*   d   */
   const char *s = screensaver_id;				/*   o   */
